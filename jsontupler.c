@@ -5,6 +5,16 @@
 #define false 0
 #define true 1
 
+void ask ( char* text, char* input_buffer ) {
+    fputs( text, stdout );
+    fflush( stdout );
+    fgets( input_buffer, sizeof input_buffer, stdin );
+
+    if ( input_buffer[strlen( input_buffer ) - 1] == '\n' ) {
+        input_buffer[strlen( input_buffer ) - 1] = '\0';
+    }
+}
+
 int main ( int argc, char* argv[] ) {
 
     FILE * fp;
@@ -14,8 +24,8 @@ int main ( int argc, char* argv[] ) {
     int first;
     int count = 0;
     char input [120];
+    char input2 [120];
     char buffer [245];
-
 
     if ( argc < 2 ) {
         printf( "Usage: %s [output filename]\n", argv[0] );
@@ -45,22 +55,6 @@ int main ( int argc, char* argv[] ) {
 
         memset( buffer, 0, sizeof buffer );
 
-        fputs( "Key?> ", stdout );
-        fflush( stdout );
-        fgets( input, sizeof input, stdin );
-        
-        // outta here
-
-        if ( strcmp( input, "END\n" ) == 0 ) {
-            fputs( "Written to disk\n", stdout );
-            fflush( stdout );
-            break;
-        }
-
-        if ( input[strlen(input) - 1] == '\n' ) {
-            input[strlen(input) - 1] = '\0';
-        }
-
         if ( first ) {
             //not first anymore, next time, there's a comma
             first = false;
@@ -69,20 +63,24 @@ int main ( int argc, char* argv[] ) {
             strcat( buffer, "  ," );
         }
 
+        ask ( "Key?> ", input );
+        
+        // outta here
+
+        if ( strcmp( input, "END" ) == 0 ) {
+            fputs( "Written to disk\n", stdout );
+            fflush( stdout );
+            break;
+        }
+
         strcat( buffer, " { \"" );
         strcat( buffer, input );
         strcat( buffer, "\": " );
 
-        fputs( "Value?> ",stdout );
-        fflush( stdout );
-        fgets( input, sizeof input, stdin );
-
-        if ( input[strlen(input) - 1] == '\n' ) {
-            input[strlen(input) - 1] = '\0';
-        }
+        ask ( "Value?> ", input2 );
 
         strcat( buffer, " \"" );
-        strcat( buffer, input );
+        strcat( buffer, input2 );
         strcat( buffer, "\" }\n" );
 
         fputs( buffer, stdout );
