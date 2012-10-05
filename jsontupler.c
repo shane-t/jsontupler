@@ -87,6 +87,7 @@ int main ( int argc, char* argv[] ) {
         fputs( buffer, fp );
     }
 
+    fflush(fp);
     answered = false;
 
     do {
@@ -104,6 +105,7 @@ int main ( int argc, char* argv[] ) {
         }
 
     } while ( answered == false );
+    
 
     if ( finalize ) {
         fputs( "Finalizing...\n", stdout );
@@ -115,4 +117,3 @@ int main ( int argc, char* argv[] ) {
     fclose( fp );
     return 0;
 }
-
